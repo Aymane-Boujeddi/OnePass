@@ -63,4 +63,5 @@ class AdressIPController extends Controller
     {
         //
     }
+    
 }
