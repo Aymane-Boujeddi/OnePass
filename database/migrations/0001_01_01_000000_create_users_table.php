@@ -18,8 +18,6 @@ return new class extends Migration
                 $table->string('email')->unique();
                 $table->string('password');
                 $table->boolean('estActif')->default(true);
-                $table->integer('tentativesConnexion')->default(0);
-                $table->dateTime('verrouilleJusqua')->nullable();
                 $table->enum('role',['admin','user'])->default('user');
                 $table->rememberToken();
                 $table->timestamps();
