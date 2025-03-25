@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
-use App\Models\motPass;
+use App\Models\adressIP;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
-class MotPassController extends Controller
+class AdressIPController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -34,7 +35,7 @@ class MotPassController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(motPass $motPass)
+    public function show(adressIP $adressIP)
     {
         //
     }
@@ -42,7 +43,7 @@ class MotPassController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(motPass $motPass)
+    public function edit(adressIP $adressIP)
     {
         //
     }
@@ -50,7 +51,7 @@ class MotPassController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, motPass $motPass)
+    public function update(Request $request, adressIP $adressIP)
     {
         //
     }
@@ -58,7 +59,7 @@ class MotPassController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(motPass $motPass)
+    public function destroy(adressIP $adressIP)
     {
         //
     }
