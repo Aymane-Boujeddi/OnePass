@@ -21,6 +21,11 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
+        'estActif',
+        'tentativesConnexion',
+        'verrouilleJusqua',
+        'role'
     ];
 
     /**
@@ -45,4 +50,11 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    public function adressIp(){
+        return $this->hasMany(adressIP::class);
+    }
+    public function motPasse(){
+        return $this->hasMany(motPass::class);
+    }
+    
 }
