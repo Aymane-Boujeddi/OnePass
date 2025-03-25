@@ -1,66 +1,87 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# OnePass - Secure Password Management API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Overview
 
-## About Laravel
+OnePass is a secure password management API that enables users to create, read, update, and delete their passwords in a zero-knowledge environment. All passwords are encrypted client-side before being sent to the server, ensuring maximum data confidentiality. The system includes advanced security features such as rate limiting, new device verification, IP management, and geographical restrictions.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Features
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Core Functionality
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **Zero-Knowledge Password Storage**: All passwords are encrypted client-side before transmission
+- **Complete Password Management**: Create, read, update, and delete password entries
+- **Master Password Authentication**: Secure access using a single master password
 
-## Learning Laravel
+### Security Features
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- **Rate Limiting**: Limits login attempts to 10 per second with automatic blocking for 1 hour when exceeded
+- **New Device Verification**: Email verification required when logging in from a new device
+- **IP Management**:
+  - User-defined whitelist of trusted IP addresses
+  - Admin-managed blacklist of suspicious IP addresses
+- **Geographical Restrictions**: Access limited to specified countries (e.g., Morocco, United States, Germany)
+- **Secure Communications**: All API endpoints secured with SSL/TLS
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## System Architecture
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Domain Model
 
-## Laravel Sponsors
+The system is built around the following core entities:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+- **User**: Manages account information and authentication
+- **Password**: Stores encrypted password data with metadata
+- **Device**: Tracks verified devices for each user
+- **Session**: Manages active user sessions
+- **IPManager**: Handles IP whitelisting and blacklisting
 
-### Premium Partners
+### Technology Stack
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+- **Backend**: Laravel (PHP Framework)
+- **Database**: MySQL
+- **Authentication**: Laravel Sanctum for API token authentication
+- **Encryption**: AES-256 for password encryption
+- **Email Service**: Laravel Mail with SMTP
+- **Hosting**: AWS EC2, Azure VM, or DigitalOcean Droplet
 
-## Contributing
+## API Endpoints
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Authentication
 
-## Code of Conduct
+- `POST /api/auth/register` - Create a new user account
+- `POST /api/auth/login` - Authenticate with master password
+- `POST /api/auth/verify-device` - Verify a new device
+- `POST /api/auth/logout` - End the current session
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Password Management
 
-## Security Vulnerabilities
+- `GET /api/passwords` - Retrieve all passwords
+- `GET /api/passwords/{id}` - Retrieve a specific password
+- `POST /api/passwords` - Create a new password
+- `PUT /api/passwords/{id}` - Update an existing password
+- `DELETE /api/passwords/{id}` - Delete a password
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Security Management
 
-## License
+- `GET /api/security/ip-whitelist` - Get user's IP whitelist
+- `POST /api/security/ip-whitelist` - Add IP to whitelist
+- `DELETE /api/security/ip-whitelist/{ip}` - Remove IP from whitelist
+- `GET /api/security/allowed-countries` - Get allowed countries (admin)
+- `PUT /api/security/allowed-countries` - Update allowed countries (admin)
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Setup Instructions
+
+### Prerequisites
+
+- PHP 8.0+
+- Composer
+- MySQL 5.7+
+- Web server (Apache or Nginx)
+- SSL certificate
+
+### Installation
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/yourusername/onepass.git
+   cd onepass
