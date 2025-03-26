@@ -14,7 +14,7 @@ return new class extends Migration
             $table->id();
             $table->string('adressIP')->unique();
             $table->string('nameAppareil');
-            $table->enum('etat', ['liste_blanche', 'liste_noir']);
+            $table->enum('etat', ['liste_blanche', 'liste_noir','en_Attente']);
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
