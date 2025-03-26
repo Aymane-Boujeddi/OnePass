@@ -79,6 +79,39 @@ class AdressIPController extends Controller
         ],200);
     }
 
+    public function validerNouvelleAppreil($id){
+        $id_ip = $id;
+
+        $device = AdressIp::where('id', $id_ip)->first();
+    
+        if ($device) {
+            $device->etat = 'liste_blanche';
+            $device->nameAppareil='Appreil_principal';
+
+            $device->save();
+    
+            return response()->json(['message'=>'l appreil a été autorisé']);
+        }
+    
+        return response()->json(['message'=>'Aucune demande trouvée pour cette IP.']);
+    }
+
+    public function refuserNouvelleAppreil($id){
+        $id_ip = $id;
+
+        $device = AdressIp::where('id', $id_ip)->first();
+    
+        if ($device) {
+            $device->etat = 'liste_noir';
+            $device->nameAppareil='Appreil_refuser';
+            $device->save();
+    
+            return response()->json(['message'=>'l appreil est réfusé']);
+        }
+    
+        return response()->json(['message'=>'Aucune demande trouvée pour cette IP.']);
+    }
+
 
     public function getWhiteList(){
         $white = motPass::where('etat','liste_blanche')->get();
@@ -110,6 +143,39 @@ class AdressIPController extends Controller
         return response()->json([
             'message' => 'Your Ip has been confirmed'
         ],200);
+    }
+
+    public function validerNouvelleAppreil($id){
+        $id_ip = $id;
+
+        $device = AdressIp::where('id', $id_ip)->first();
+    
+        if ($device) {
+            $device->etat = 'liste_blanche';
+            $device->nameAppareil='Appreil_principal';
+
+            $device->save();
+    
+            return response()->json(['message'=>'l appreil a été autorisé']);
+        }
+    
+        return response()->json(['message'=>'Aucune demande trouvée pour cette IP.']);
+    }
+
+    public function refuserNouvelleAppreil($id){
+        $id_ip = $id;
+
+        $device = AdressIp::where('id', $id_ip)->first();
+    
+        if ($device) {
+            $device->etat = 'liste_noir';
+            $device->nameAppareil='Appreil_refuser';
+            $device->save();
+    
+            return response()->json(['message'=>'l appreil est réfusé']);
+        }
+    
+        return response()->json(['message'=>'Aucune demande trouvée pour cette IP.']);
     }
 
 
