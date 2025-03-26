@@ -25,3 +25,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanc
 // Route::Get('/Index',[MotPassController::class],'index');
 
 Route::apiResource('password',MotPassController::class);
+
+Route::middleware('auth:sanctum')->group(function(){
+
+});
