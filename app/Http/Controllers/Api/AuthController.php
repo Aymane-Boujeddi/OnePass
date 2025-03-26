@@ -1,15 +1,19 @@
 <?php
 
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+
 use App\Models\AdressIp;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\NewDeviceNotification;
+
+use App\Http\Controllers\Controller;
+
 
 class AuthController extends Controller
 {
