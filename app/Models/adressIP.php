@@ -9,6 +9,7 @@ use Torann\GeoIP\Facades\GeoIP;
 class adressIP extends Model
 {
     //
+    protected $table = 'adress_ips'; 
     protected $fillable = [
         "adressIP",
         "nameAppareil",
