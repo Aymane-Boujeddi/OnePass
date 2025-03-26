@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\NewDeviceNotification;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\RateLimiter;
-use Illuminate\Support\Facades\Mail;
 use App\Mail\WarningEmail;
 
 class AuthController extends Controller
@@ -82,6 +81,58 @@ class AuthController extends Controller
     
         $token = $user->createToken('auth-token')->plainTextToken;
         RateLimiter::clear($key);
+
+
+        $ipAddress = $request->ip();
+
+        //cet ip pour tester l accés des autres appreil
+        //$ipAddress="127.0.0.21";
+
+        $appareil = AdressIp::where('adressIP', $ipAddress)
+                            ->where('user_id', $user->id)
+                            ->first();
+        
+
+        
+        if ($appareil && $appareil->etat === 'liste_blanche') {
+            $token = $user->createToken('auth-token')->plainTextToken;
+            return [
+                'message' => 'Logged in successfully',
+                'user' => $user,
+                'token' => $token
+            ];
+            
+        }
+
+        
+        if (!$appareil) {
+            $appareil = AdressIp::create([
+                'adressIP' => $ipAddress,
+                'nameAppareil' => 'Nouvel appareil',
+                'etat' => 'en_Attente',
+                'user_id' => $user->id
+            ]);
+           // return response()->json([$appareil]);
+            
+
+            
+            Mail::to($user->email)->send(new NewDeviceNotification($appareil));
+            
+            return response([
+                'message' => 'Nouvel appareil détecté. Veuillez confirmer via l’e-mail envoyé.'
+            ], 403);
+        }
+
+        
+        if ($appareil->etat === 'liste_noir') {
+            return response([
+                'message' => 'Accès refusé. Contactez le support.'
+            ], 403);
+        }
+
+        return response([
+            'message' => 'Votre appareil est en attente de validation. Veuillez vérifier votre e-mail.'
+        ], 403);
 
         return response()->json([
             'message' => 'Logged in successfully',
