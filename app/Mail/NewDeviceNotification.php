@@ -11,12 +11,14 @@ class NewDeviceNotification extends Mailable
     use Queueable, SerializesModels;
 
     public $ip;
-    public $userAgent;
+    public $appareil;
+    public $id_ip;
 
-    public function __construct($ip, $userAgent)
+    public function __construct($appareil)
     {
-        $this->ip = $ip;
-        $this->userAgent = $userAgent;
+        $this->ip = $appareil->adressIP; 
+        $this->appareil = $appareil->nameAppareil; 
+        $this->id_ip=$appareil->id;
     }
 
     public function build()
@@ -25,7 +27,9 @@ class NewDeviceNotification extends Mailable
                     ->view('emails.newDevice')
                     ->with([
                         'ip' => $this->ip,
-                        'userAgent' => $this->userAgent,
+                        'appareil' => $this->appareil, 
+                        'id_ip'=>$this->id_ip
+                        
                     ]);
     }
 }

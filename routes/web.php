@@ -1,27 +1,20 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Illuminate\Http\Request;
-use App\Models\AdressIp;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\WarningEmail;
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
-
-
-
-Route::get('/valider-ip', function (Request $request) {
-    $ip = $request->query('ip');
-
-    $device = AdressIp::where('adressIP', $ip)->first();
-
-    if ($device) {
-        $device->etat = 'liste_blanche';
-        $device->save();
-
-        return "L'appareil a été autorisé.";
+Route::get('/login', function () {
+    if (RateLimiter::tooManyAttempts('send-message:'.request()->ip(), $perHour = 5)) {
+        $seconds = RateLimiter::availableIn('send-message:'.request()->ip());
+     
+        Mail::to('badrdine03@gmail.com')->send(new WarningEmail());
+        return 'You may try again in '.$seconds.' seconds.'.'user ip is '.request()->ip();
     }
 
-    return "Aucune demande trouvée pour cette IP.";
+    RateLimiter::increment('send-message:'.request()->ip());
 });
+
+
+
