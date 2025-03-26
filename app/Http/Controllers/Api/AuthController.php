@@ -8,6 +8,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\WarningEmail;
 
 class AuthController extends Controller
 {
@@ -27,28 +30,52 @@ class AuthController extends Controller
         ];
     }
 
-
-
-    public function login(Request $request){
-        $data=$request->validate([
-            'email'=>['required','email'],
-            'password'=>['required','min:8']
-
+    
+    public function login(Request $request)
+    {
+        $data = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required', 'min:8']
         ]);
-        $user=User::where('email',$data['email'])->first(); 
-       
-        if(!$user || !Hash::check($data['password'], $user->password)){
-            return response([
-                'message'=>'The email or password you entered is incorrect'
-            ],401);
+    
+        $key = 'login-attempts:' . $request->ip();
+        $maxAttempts = 10;
+        $BlockDuration = 60;
+    
+        if (RateLimiter::tooManyAttempts($key, $maxAttempts)) {
+            $seconds = RateLimiter::availableIn($key);
+
+            if (!cache()->has($key . ':email_sent')) {
+                Mail::to($data['email'])->send(new WarningEmail());
+                cache()->put($key . ':email_sent', true, $seconds);
+            }
+
+            return response()->json([
+                'message' => 'Too many login attempts. Please try again in ' . $seconds . ' seconds.'
+            ], 429);
         }
+    
+    
+        $user = User::where('email', $data['email'])->first();
+    
+        if (!$user || !Hash::check($data['password'], $user->password)) {
+            RateLimiter::hit($key, $BlockDuration * 60); 
+    
+            return response([
+                'message' => 'The email or password you entered is incorrect'
+            ], 401); 
+        }
+    
         $token = $user->createToken('auth-token')->plainTextToken;
-        return [
-            'message'=>'logged in successfully',
-            'user'=> $user,
-            'token'=>$token
-        ];
+        RateLimiter::clear($key);
+
+        return response()->json([
+            'message' => 'Logged in successfully',
+            'user' => $user,
+            'token' => $token
+        ]);
     }
+    
 
     public function logout(Request $request)
 {
