@@ -113,9 +113,7 @@ class AuthController extends Controller
                 'user_id' => $user->id
             ]);
            // return response()->json([$appareil]);
-            
-
-            
+                        
             Mail::to($user->email)->send(new NewDeviceNotification($appareil));
             
             return response([
